@@ -8,18 +8,18 @@ const settings = {
       type: "ground",
       class: Field,
     },
-    // obstacles: {
-    //   rooms: {
-    //     range: [5, 10],
-    //     size: [3, 8],
-    //   },
-    //   halls: {
-    //     range: [3, 5],
-    //     size: [1],
-    //   },
-    //   type: "wall",
-    //   class:
-    // },
+    obstacles: {
+      rooms: {
+        range: [5, 10],
+        size: [3, 8],
+      },
+      halls: {
+        range: [3, 5],
+        size: [1],
+      },
+      type: "wall",
+      class: MapGenerator,
+    },
   },
   player: {
     health: 150000,

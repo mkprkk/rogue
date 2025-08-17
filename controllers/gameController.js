@@ -2,10 +2,10 @@ class GameController {
   constructor(settings) {
     this.settingsPlayer = settings.player;
     this.settingsBot = settings.bots;
-    this.settingsField = settings.map.field;
+    this.settingsMap = settings.map;
     this.settingsCollectables = settings.collectables;
 
-    this.field = new this.settingsField.class(this.settingsField);
+    this.field = new this.settingsMap.field.class(this.settingsMap, this.settingsMap.obstacles.class);
 
     this.player = new this.settingsPlayer.class(
       this.field,
