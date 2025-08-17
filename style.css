@@ -25,51 +25,46 @@ h1 {
   height: 640px;
   overflow: hidden;
 }
-
-.field > * {
-  width: 50px;
-  height: 50px;
+.tile > * {
+  height: 100%;
   background-size: 100%;
+  position: relative;
 }
-.field .tile {
+.tile {
   background-image: url(images/tile-.png);
   z-index: 5;
 }
-.field .tileW {
+.tileW {
   background-image: url(images/tile-W.png);
+  z-index: 15;
 }
-.field .tileE {
+.tileE {
   background-image: url(images/tile-E.png);
   z-index: 10;
 }
-.field .tileP {
+.tileP {
   background-image: url(images/tile-P.png);
   z-index: 10;
 }
-.field .tileHP {
+.tileHP {
   background-image: url(images/tile-HP.png);
   z-index: 9;
 }
-.field .tileSW {
+.tileSW {
   background-image: url(images/tile-SW.png);
   z-index: 9;
 }
-.field .tile .health {
-  background-color: #ff0000;
+.tileE .health, .tileP .health {
+  width: 100%;
+  transform-origin: left;
   z-index: 11;
   position: absolute;
-  left: 0px;
-  top: 0px;
+  left: 0;
+  top: 0;
   height: 3px;
 }
-.field .tileP .health {
-  background-color: #00ff00;
-  z-index: 11;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  height: 3px;
-}
+.tileE .health { background-color: #ff0000; }
+.tileP .health { background-color: #00ff00; }
 .inventory-box {
   border: 2px solid #d0d0d0;
   float: left;
