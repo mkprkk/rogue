@@ -22,7 +22,7 @@ const settings = {
     },
   },
   player: {
-    health: 150,
+    health: 150000,
     damage: 20,
     zIndex: 10,
     controls: {
