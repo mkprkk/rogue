@@ -65,7 +65,6 @@ class GameController {
       attempts++;
     }
 
-
     for (let y = 0; y < this.field.rows; y++) {
       for (let x = 0; x < this.field.cols; x++) {
         const cellIndex = y * this.field.cols + x;
@@ -76,6 +75,37 @@ class GameController {
         }
       }
     }
+  }
+
+  restartGame() {
+    console.log("Restarting game...");
+
+    // 1. Очищаем все сущности
+    this.player = null;
+    this.bots = [];
+    this.collectables = [];
+
+    // 2. Сброс игрового состояния
+    this.gameState.setState("playing");
+
+    // 3. Повторная инициализация
+    this.field = new this.settingsMap.field.class(
+      this.settingsMap,
+      this.settingsMap.obstacles.class
+    );
+    this.player = new this.settingsPlayer.class(
+      this.field,
+      this.settingsPlayer
+    );
+    this.placeRandomly(this.player);
+    this.createBots(this.settingsBot.amount);
+    this.createCollectables(this.settingsCollectables);
+
+    // 4. Очищаем canvas и обновляем View
+    // Это важно, чтобы старые объекты не "висели" на экране
+    this.view.clearCanvas();
+    this.view.initEntityViews();
+    this.view.render();
   }
 
   createBots(count) {
@@ -125,6 +155,8 @@ class GameController {
     this.checkWinCondition();
   }
 
+  // Внутри класса GameController
+
   checkWinCondition() {
     const allBotsDead = this.bots.every((bot) => !bot.isAlive);
     if (allBotsDead) {
@@ -133,6 +165,12 @@ class GameController {
     } else if (!this.player.isAlive) {
       this.gameState.setState("defeat");
       this.eventManager.notify("gameOver", { result: "defeat" });
+
+      // Добавьте вызов restartGame() здесь
+      // Вы можете сделать это через тайм-аут, чтобы дать игроку увидеть результат поражения
+      setTimeout(() => {
+        this.restartGame();
+      }, 2000); // Например, через 2 секунды
     }
   }
 
