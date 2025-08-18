@@ -1,32 +1,20 @@
 class EntityView {
-  constructor(entity, cellElements, spriteClass, cols) {
+  constructor(entity, canvasContext, spriteImage, cols, cellSize) {
     this.entity = entity;
-    this.cellElements = cellElements;
-    this.spriteClass = spriteClass;
+    this.ctx = canvasContext;
+    this.spriteImage = spriteImage;
     this.cols = cols;
-    this.element = document.createElement("div");
-    this.element.classList.add(spriteClass);
-    this.render();
+    this.cellSize = cellSize;
+    this.width = cellSize.width;
+    this.height = cellSize.height;
   }
 
   render() {
-    this.cellElements.forEach(
-      (cell) => cell.contains(this.element) && cell.removeChild(this.element)
-    );
-    const idx = this.entity.position.y * this.cols + this.entity.position.x;
-    const cell = this.cellElements[idx];
-    if (cell) {
-      cell.appendChild(this.element);
-    }
-  }
+if ((this.entity.isAlive === false) || this.entity.onField === false) return;
 
-  updatePosition() {
-    this.render();
-  }
+    const x = this.entity.position.x * this.cellSize.width;
+    const y = this.entity.position.y * this.cellSize.height;
 
-  removeEntityView() {
-    if (this.element && this.element.parentNode) {
-      this.element.parentNode.removeChild(this.element);
-    }
+    this.ctx.drawImage(this.spriteImage, x, y, this.width, this.height);
   }
 }

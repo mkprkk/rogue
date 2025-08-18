@@ -1,12 +1,9 @@
 class CollectableView extends EntityView {
-  constructor(entity, cellElements, spriteClass, cols) {
-    super(entity, cellElements, spriteClass, cols);
-    const collectableDiv = document.createElement("div");
-    collectableDiv.classList.add(entity.name);
-    this.element.appendChild(collectableDiv);
-
+  constructor(entity, canvasContext, spriteImage, cols, cellSize) {
+    super(entity, canvasContext, spriteImage, cols, cellSize);
+    
     this.entity.observer.subscribe("pickedUp", () => {
-      this.removeEntityView();
+      this.entity.onField = false;
     });
   }
 }

@@ -1,18 +1,23 @@
 class Field {
-  constructor(settings, mapGeneratorClass) {
-    this.width = settings.width;
-    this.height = settings.height;
-    this.cols = settings.cols;
-    this.rows = settings.rows;
-
-    const mapGenerator = new mapGeneratorClass(settings);
-    this.cells = mapGenerator.generate();
+  constructor(settings, mapGeneratorClass) {  
+    this.settings = settings.field;
+    this.width = this.settings.width;
+    this.height = this.settings.height;
+    this.cols = this.settings.cols;
+    this.rows = this.settings.rows;
+    
+    this.cells = [];
+    
+    if (mapGeneratorClass) {
+      const mapGenerator = new mapGeneratorClass(settings);
+      this.cells = mapGenerator.generate();
+    }
   }
 
   getCellSize() {
     return {
-      width: Math.floor(this.width / this.cols),
-      height: Math.floor(this.height / this.rows),
+      width: this.width / this.cols,
+      height: this.height / this.rows,
     };
   }
 }

@@ -15,14 +15,14 @@ const settings = {
       },
       halls: {
         range: [3, 5],
-        size: [1],
+        size: [1, 2],
       },
       type: "wall",
       class: MapGenerator,
     },
   },
   player: {
-    health: 150000,
+    health: 150,
     damage: 20,
     zIndex: 10,
     controls: {
@@ -65,6 +65,10 @@ const settings = {
   },
 };
 
-const gameController = new GameController(settings);
-const gameView = new GameView(gameController, viewClasses, sprites);
-gameController.start(gameView);
+const spriteLoader = new SpriteLoader();
+spriteLoader.load(sprites).then(() => {
+  const gameController = new GameController(settings);
+  console.log("Типы клеток:", [...new Set(gameController.field.cells.map(c => c.type))]);
+  const gameView = new GameView(gameController, spriteLoader.images);
+  gameController.start(gameView);
+});

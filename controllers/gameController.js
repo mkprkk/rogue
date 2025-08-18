@@ -5,7 +5,10 @@ class GameController {
     this.settingsMap = settings.map;
     this.settingsCollectables = settings.collectables;
 
-    this.field = new this.settingsMap.field.class(this.settingsMap, this.settingsMap.obstacles.class);
+    this.field = new this.settingsMap.field.class(
+      this.settingsMap,
+      this.settingsMap.obstacles.class
+    );
 
     this.player = new this.settingsPlayer.class(
       this.field,
@@ -42,9 +45,37 @@ class GameController {
   }
 
   placeRandomly(entity) {
-    const x = Math.floor(Math.random() * this.field.cols);
-    const y = Math.floor(Math.random() * this.field.rows);
-    entity.placeEntity(x, y);
+    let attempts = 0;
+    const maxAttempts = this.field.cols * this.field.rows * 2;
+
+    while (attempts < maxAttempts) {
+      const x = Math.floor(Math.random() * this.field.cols);
+      const y = Math.floor(Math.random() * this.field.rows);
+
+      const cellIndex = y * this.field.cols + x;
+      if (this.field.cells[cellIndex] !== this.settingsMap.field.type) {
+        attempts++;
+        continue;
+      }
+
+      if (entity.placeEntity(x, y)) {
+        return true;
+      }
+
+      attempts++;
+    }
+
+
+    for (let y = 0; y < this.field.rows; y++) {
+      for (let x = 0; x < this.field.cols; x++) {
+        const cellIndex = y * this.field.cols + x;
+        if (this.field.cells[cellIndex] === this.settingsMap.field.type) {
+          if (entity.placeEntity(x, y)) {
+            return true;
+          }
+        }
+      }
+    }
   }
 
   createBots(count) {
@@ -125,5 +156,3 @@ class GameState {
     this.state = state;
   }
 }
-
-

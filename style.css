@@ -54,7 +54,8 @@ h1 {
   background-image: url(images/tile-SW.png);
   z-index: 9;
 }
-.tileE .health, .tileP .health {
+.tileE .health,
+.tileP .health {
   width: 100%;
   transform-origin: left;
   z-index: 11;
@@ -63,8 +64,12 @@ h1 {
   top: 0;
   height: 3px;
 }
-.tileE .health { background-color: #ff0000; }
-.tileP .health { background-color: #00ff00; }
+.tileE .health {
+  background-color: #ff0000;
+}
+.tileP .health {
+  background-color: #00ff00;
+}
 .inventory-box {
   border: 2px solid #d0d0d0;
   float: left;
