@@ -14,7 +14,8 @@ class GameController {
       this.field,
       this.settingsPlayer
     );
-    this.placeRandomly(this.player);
+    this.placeOnGround(this.player);
+    this.startListeningPlayerMoves();
 
     this.bots = [];
     this.createBots(this.settingsBot.amount);
@@ -22,29 +23,16 @@ class GameController {
     this.collectables = [];
     this.createCollectables(this.settingsCollectables);
 
+
     this.gameState = new GameState();
     this.eventManager = new Observer();
     this.eventManager.subscribe("die", () => this.checkWinCondition());
 
-    document.addEventListener("keydown", (e) => {
-      e.preventDefault();
-      this.player.setDirection(e.key);
-      this.player.attackKey(e.key);
-    });
-    document.addEventListener("keyup", (e) => {
-      e.preventDefault();
-      if (
-        this.settingsPlayer.controls.move.includes(e.key) ||
-        this.settingsPlayer.controls.move.includes(e.key.toLowerCase())
-      ) {
-        this.player.setDirection("stop");
-      }
-    });
-
+    this.lastUpdateTime = performance.now();
     this.gameLoop = this.gameLoop.bind(this);
   }
 
-  placeRandomly(entity) {
+  placeOnGround(entity) {
     let attempts = 0;
     const maxAttempts = this.field.cols * this.field.rows * 2;
 
@@ -77,9 +65,23 @@ class GameController {
     }
   }
 
-  restartGame() {
-    console.log("Restarting game...");
+  startListeningPlayerMoves() {
+    document.addEventListener("keydown", (e) => {
+      e.preventDefault();
+      this.player.setDirection(e.key);
+      this.player.attackKey(e.key);
+    });
+    document.addEventListener("keyup", () => {
+      this.player.setDirection("stop");
+    });
+  }
 
+  stopListeningPlayerMoves() {
+    document.removeEventListener("keydown");
+    document.removeEventListener("keyup");
+  }
+
+  restartGame() {
     this.player = null;
     this.bots = [];
     this.collectables = [];
@@ -94,7 +96,7 @@ class GameController {
       this.field,
       this.settingsPlayer
     );
-    this.placeRandomly(this.player);
+    this.placeOnGround(this.player);
     this.createBots(this.settingsBot.amount);
     this.createCollectables(this.settingsCollectables);
 
@@ -110,7 +112,7 @@ class GameController {
         this.field,
         this.settingsBot
       );
-      this.placeRandomly(bot);
+      this.placeOnGround(bot);
       this.bots.push(bot);
     }
   }
@@ -120,7 +122,7 @@ class GameController {
       if (name === "zIndex") return;
       for (let i = 0; i < cfg.amount; i++) {
         const collectable = new cfg.class(this.field, cfg);
-        this.placeRandomly(collectable);
+        this.placeOnGround(collectable);
 
         collectable.observer.subscribe("applyHealthPotion", () => {
           this.player.observer.notify("applyHealthPotion", {
@@ -134,10 +136,10 @@ class GameController {
     });
   }
 
-  update() {
+  update(deltaTime) {
     if (!this.player.isAlive) return;
-    this.player.update();
-    this.bots.forEach((bot) => bot.isAlive && bot.update());
+    this.player.update(deltaTime);
+    this.bots.forEach((bot) => bot.isAlive && bot.update(deltaTime));
 
     this.collectables = this.collectables.filter((c) => {
       if (c.onField) {
@@ -177,7 +179,11 @@ class GameController {
   }
 
   gameLoop() {
-    this.update();
+    const now = performance.now();
+    const deltaTime = (now - this.lastUpdateTime) / 1000;
+    this.lastUpdateTime = now;
+
+    this.update(deltaTime);
     this.view.render();
     requestAnimationFrame(this.gameLoop);
   }

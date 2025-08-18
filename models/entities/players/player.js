@@ -1,34 +1,20 @@
 class Player extends Entity {
-  constructor(health, damage, field) {
-    super(field, settings.player.zIndex);
+  constructor(health, damage, field, zIndex = 1, speed = 1) {
+    super(field, zIndex);
     this.health = health;
     this.maxHealth = health;
     this.damage = damage;
     this.isAlive = true;
-    this.lastMoveTime = 0;
-    this.moveDelay = 250;
+    this.speed = speed;
+    this.moveAccumulator = 0;
+    this.attackCooldown = 0.4;
+    this.attackTimer = 0;
     this.observer = new Observer();
-  }
-
-  restrictActionByDelay() {
-    const currentTime = Date.now();
-    if (currentTime - this.lastMoveTime < this.moveDelay) {
-      return false;
-    }
-    this.lastMoveTime = currentTime;
-    return true;
   }
 
   isAdjacent(player) {
     if (!player.isAlive) return false;
-    const distX = Math.min(
-      Math.abs(this.position.x - player.position.x),
-      this.field.cols - Math.abs(this.position.x - player.position.x)
-    );
-    const distY = Math.min(
-      Math.abs(this.position.y - player.position.y),
-      this.field.rows - Math.abs(this.position.y - player.position.y)
-    );
+    const { distX, distY } = this.getDistance(player);
     return distX <= 1 && distY <= 1;
   }
 
@@ -39,14 +25,8 @@ class Player extends Entity {
     );
   }
 
-  isAdjacentAlivePlayer(player) {
-    return (
-      player instanceof Player && player.isAlive && this.isAdjacent(player)
-    );
-  }
-
   attack(target) {
-    if (this.isAdjacentAlivePlayer(target)) {
+    if (this.isAdjacent(target)) {
       target.getDamage(this.damage);
       this.observer.notify("attack", { target });
     }

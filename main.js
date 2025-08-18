@@ -1,8 +1,8 @@
 const settings = {
   map: {
     field: {
-      width: 1024,
-      height: 640,
+      width: window.innerWidth,
+      height: window.innerHeight,
       cols: 40,
       rows: 24,
       type: "ground",
@@ -22,22 +22,14 @@ const settings = {
     },
   },
   player: {
-    health: 150000,
+    health: 150,
     damage: 20,
     zIndex: 10,
     controls: {
-      move: [
-        "ArrowUp",
-        "ArrowDown",
-        "ArrowLeft",
-        "ArrowRight",
-        "w",
-        "a",
-        "s",
-        "d",
-      ],
       attack: " ",
     },
+    attackCooldown: 0.4,
+    speed: 10,
     class: HumanPlayer,
   },
   bots: {
@@ -46,6 +38,8 @@ const settings = {
     amount: 10,
     zIndex: 10,
     rangeVision: 5,
+    speed: 8,
+    attackCooldown: 2,
     class: Bot,
   },
   collectables: {
@@ -68,7 +62,6 @@ const settings = {
 const spriteLoader = new SpriteLoader();
 spriteLoader.load(sprites).then(() => {
   const gameController = new GameController(settings);
-  console.log("Типы клеток:", [...new Set(gameController.field.cells.map(c => c.type))]);
   const gameView = new GameView(gameController, spriteLoader.images);
   gameController.start(gameView);
 });

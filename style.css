@@ -8,6 +8,7 @@ html {
 body {
   background-color: #000000;
   color: #ffffff;
+  margin: 0;
 }
 h1 {
   font-family: "Playfair Display";
@@ -16,13 +17,14 @@ h1 {
   margin: 0px;
 }
 .field-box {
-  border: 2px solid #d0d0d0;
+  width: 100%;
+  height: 100%;
   float: left;
 }
 .field {
   position: relative;
-  width: 1024px;
-  height: 640px;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 .tile > * {
